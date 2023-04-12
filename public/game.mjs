@@ -1,13 +1,12 @@
 import Player from './Player.mjs';
 import Collectible from './Collectible.mjs';
+import constants from './constants.js';
+import KeyboardController from './KeyboardController.js';
 
 const socket = io();
 const canvas = document.getElementById('game-window');
 const context = canvas.getContext('2d');
 
-import constants from './constants.js';
-
-import KeyboardController from './KeyboardController.js';
 
 //draw board
 context.fillStyle = "rgb(30, 30, 50)";

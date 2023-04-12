@@ -1,5 +1,6 @@
 import Player from './public/Player.mjs';
 import Collectible from './public/Collectible.mjs';
+import constants from './public/constants.js';
 
 
 module.exports = function (httpServer, app) {
@@ -18,8 +19,8 @@ module.exports = function (httpServer, app) {
     console.log("socket ID: " + socketID)
     
     //create player
-    const posX = Math.floor(Math.random() * 640);
-    const posY = Math.floor(Math.random() * 480);
+    const posX = Math.floor(Math.random() * (constants.BOARD_WIDTH - constants.PLAYER_WIDTH));
+    const posY = Math.floor(Math.random() * (constants.BOARD_HEIGHT - constants.PLAYER_HEIGHT));
     
     const player = new Player({x: posX, y: posY, score: 0, id: socketID});
     
