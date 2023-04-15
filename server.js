@@ -17,7 +17,7 @@ const http = require('http').createServer(app);
 const runGame = require("./gameRunner.js"); //require the game runner
 
 app.use('/public', express.static(process.cwd() + '/public'));
-app.use('/assets', express.static(process.cwd() + '/assets'));
+//app.use('/assets', express.static(process.cwd() + '/assets'));
 
 
 //set up helmet
@@ -35,8 +35,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //For FCC testing purposes and enables user to connect from outside the hosting platform
 app.use(cors({origin: '*'})); 
-
-//TODO: use pug to pass dynamic dimensions to canvas
 
 // Index page (static HTML)
 app.route('/')
