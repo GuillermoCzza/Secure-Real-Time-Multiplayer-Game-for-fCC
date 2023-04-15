@@ -46,7 +46,7 @@ socket.on('new player', newPlayer => {
 
     //When server sends update, update list and properties of players
     //except own (client master - server slave), but still update own score
-    socket.on('update', ([playerList, currentPlayerNum]) => {
+    socket.on('update', (playerList) => {
       for (let playerData of playerList) {
         if (playerData.id == socket.id) {
           player.score = playerData.score;

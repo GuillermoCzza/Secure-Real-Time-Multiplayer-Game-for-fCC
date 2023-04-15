@@ -8,7 +8,7 @@ module.exports = function (httpServer, app) {
   const io = require('socket.io')(httpServer);
 
 
-  let currentPlayerNum = 0;
+  let currentCoin;
   let playerList = [];
 
   
@@ -28,7 +28,6 @@ module.exports = function (httpServer, app) {
     playerList.push(player);
     
     console.log('player connected. ID: ' + socketID);
-    currentPlayerNum++;
     
     io.emit('new player', player); //send player so that emitter can identify it as own
     
@@ -45,7 +44,6 @@ module.exports = function (httpServer, app) {
 
     //disconnection
     socket.on('disconnect', () => {
-      currentPlayerNum--;
       playerList = playerList.filter(player => player.id != socketID); //remove disconnected player
       console.log(playerList);
     });
@@ -53,19 +51,15 @@ module.exports = function (httpServer, app) {
 
   //game update function
   function updatePlayers(){
-    io.emit('update', [playerList, currentPlayerNum]);
+    io.emit('update', playerList);
     console.log(playerList);
   }
   
   //game update loop
   const intervalId = setInterval(updatePlayers, 7); //send updates every 7 miliseconds
 
-  //player behaviour
-
-  //collectible behaviour
-
+  //collectible spawning
+  
   //score tracking
-
-  //rank updating
   
 };
