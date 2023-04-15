@@ -36,6 +36,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //For FCC testing purposes and enables user to connect from outside the hosting platform
 app.use(cors({origin: '*'})); 
 
+//TODO: use pug to pass dynamic dimensions to canvas
+
 // Index page (static HTML)
 app.route('/')
   .get(function (req, res) {
