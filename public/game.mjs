@@ -7,16 +7,6 @@ const socket = io();
 const canvas = document.getElementById('game-window');
 const context = canvas.getContext('2d');
 
-
-//draw board
-context.fillStyle = "rgb(30, 30, 50)";
-context.fillRect(0, 0, 640, 480);
-
-context.fillStyle = "rgb(240, 240, 240)";
-context.fillRect(constants.MARGIN, constants.MARGIN + constants.HUD_WIDTH,
-  constants.BOARD_WIDTH + constants.BORDER_THICKNESS * 2, constants.BOARD_HEIGHT + constants.BORDER_THICKNESS * 2); //edge frame
-
-
 let otherPlayers = [];
 let currentCoin;
 
@@ -62,6 +52,21 @@ socket.on('new player', ([newPlayer, preExistingCoin]) => {
 
     //frame drawing function
     function drawFrame() {
+      //draw board
+      context.fillStyle = "rgb(30, 30, 50)";
+      context.fillRect(0, 0, constants.MARGIN * 2 + constants.BORDER_THICKNESS * 2 + constants.BOARD_WIDTH, constants.MARGIN * 2 + constants.HUD_WIDTH + constants.BORDER_THICKNESS * 2 + constants.BOARD_HEIGHT);
+
+      context.fillStyle = "rgb(240, 240, 240)";
+      context.fillRect(constants.MARGIN, constants.MARGIN + constants.HUD_WIDTH,
+        constants.BOARD_WIDTH + constants.BORDER_THICKNESS * 2, constants.BOARD_HEIGHT + constants.BORDER_THICKNESS * 2); //edge frame
+
+      context.font = '24px Sans-Serif';
+      context.fillText("Controls: Arrow Keys", constants.MARGIN, constants.HUD_WIDTH); //controls text
+
+      //draw rank text
+      context.fillStyle = "rgb(240, 240, 240)";
+      context.fillText("Rank " + player.calculateRank(otherPlayers), constants.MARGIN + constants.BOARD_WIDTH / 2, constants.HUD_WIDTH);
+
       //draw play area
       context.fillStyle = "rgb(30, 30, 50)";
       context.fillRect(constants.MARGIN + constants.BORDER_THICKNESS, constants.MARGIN + constants.HUD_WIDTH + constants.BORDER_THICKNESS,
@@ -80,15 +85,17 @@ socket.on('new player', ([newPlayer, preExistingCoin]) => {
       context.fillRect(constants.MARGIN + constants.BORDER_THICKNESS + player.x,
         constants.MARGIN + constants.HUD_WIDTH + constants.BORDER_THICKNESS + player.y,
         constants.PLAYER_WIDTH, constants.PLAYER_HEIGHT);
-      
+
       //draw coin
       context.fillStyle = "rgb(232, 227, 55)"
       context.fillRect(constants.MARGIN + constants.BORDER_THICKNESS + currentCoin.x,
         constants.MARGIN + constants.HUD_WIDTH + constants.BORDER_THICKNESS + currentCoin.y,
         constants.COIN_WIDTH, constants.COIN_HEIGHT);
+
+
     }
 
-    //Redraw scene every frame (should work up to 144hz)
+    //Redraw scene every frame (should work fine up to 144hz)
     setInterval(drawFrame, 7);
   }
 });

@@ -45,12 +45,21 @@ class Player {
     }
   }
 
+  /*
   collision(item) {
 
   }
+  */
 
-  calculateRank(playersArr) {
-
+  calculateRank(otherPlayersArr) {
+    let myRank = 1;
+    //iterate through all other players and add +1 to rank for all players with a greater rank than own
+    for (let otherPlayer of otherPlayersArr){
+      if (otherPlayer.score > this.score){
+        myRank++;
+      }
+    }
+    return `${myRank}/${otherPlayersArr.length + 1}`
   }
 }
 

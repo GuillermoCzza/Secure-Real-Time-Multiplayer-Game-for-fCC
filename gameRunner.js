@@ -28,10 +28,17 @@ module.exports = function (httpServer, app) {
     return new Player({x: posX, y: posY, score: 0, id: newID})
   }
 
-  let currentCoin = createCoin();
-  console.log(currentCoin);
-  let playerList = [];
+  //function to check for collision between a player and a coin
+  function hasCollided(player, coin){
+    return (player.x < coin.x + constants.COIN_WIDTH &&
+      player.x + constants.PLAYER_WIDTH > coin.x &&
+      player.y < coin.y + constants.COIN_HEIGHT &&
+      constants.PLAYER_HEIGHT + player.y > coin.y)
+  }
 
+
+  let currentCoin = createCoin();
+  let playerList = [];
   
 
   //connection
@@ -52,12 +59,13 @@ module.exports = function (httpServer, app) {
           player.x = movedPlayer.x;
           player.y = movedPlayer.y;
 
-          //TODO: add check for collision with coin
-          //this is for debugging, consuming coin on every move
-          player.score += currentCoin.value;
-          currentCoin = createCoin(); //replace coin for new one
-          console.log(currentCoin);
-          io.emit('new coin', currentCoin);
+          //check for collision with coin
+          if (hasCollided(player, currentCoin)) {
+            player.score += currentCoin.value;
+            currentCoin = createCoin(); //replace coin for new one
+            io.emit('new coin', currentCoin);
+          }
+          
 
           break;
         }
@@ -67,14 +75,12 @@ module.exports = function (httpServer, app) {
     //disconnection
     socket.on('disconnect', () => {
       playerList = playerList.filter(player => player.id != socketID); //remove disconnected player
-      console.log(playerList);
     });
   });
 
   //game update function
   function updatePlayers(){
     io.emit('players update', playerList);
-    console.log(playerList);
   }
   
   //game update loop
