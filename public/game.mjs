@@ -18,16 +18,17 @@ context.fillRect(constants.MARGIN, constants.MARGIN + constants.HUD_WIDTH,
 
 
 let otherPlayers = [];
+let currentCoin;
 
 //when a new player is connected, check if it's oneself
 //if it is, set up the game
-socket.on('new player', newPlayer => {
+socket.on('new player', ([newPlayer, preExistingCoin]) => {
   if (newPlayer.id == socket.id) {
     //I have to construct a new Player object because methods are lost
     //when passing an object through socket.io
     const player = new Player({ x: newPlayer.x, y: newPlayer.y, score: newPlayer.score, id: newPlayer.id });
 
-
+    currentCoin = preExistingCoin;
 
     //player movement function
     function move(moveDir) {
@@ -42,11 +43,9 @@ socket.on('new player', newPlayer => {
       40: () => { move('down'); }
     }, 7 /*repeat delay in milis*/);
 
-    console.log("lo que viene despues se ejecuta");
-
     //When server sends update, update list and properties of players
     //except own (client master - server slave), but still update own score
-    socket.on('update', (playerList) => {
+    socket.on('players update', (playerList) => {
       for (let playerData of playerList) {
         if (playerData.id == socket.id) {
           player.score = playerData.score;
@@ -56,6 +55,9 @@ socket.on('new player', newPlayer => {
       otherPlayers = playerList.filter(player => player.id != socket.id);
     });
 
+    socket.on('new coin', coin => {
+      currentCoin = coin;
+    });
 
 
     //frame drawing function
@@ -78,6 +80,12 @@ socket.on('new player', newPlayer => {
       context.fillRect(constants.MARGIN + constants.BORDER_THICKNESS + player.x,
         constants.MARGIN + constants.HUD_WIDTH + constants.BORDER_THICKNESS + player.y,
         constants.PLAYER_WIDTH, constants.PLAYER_HEIGHT);
+      
+      //draw coin
+      context.fillStyle = "rgb(232, 227, 55)"
+      context.fillRect(constants.MARGIN + constants.BORDER_THICKNESS + currentCoin.x,
+        constants.MARGIN + constants.HUD_WIDTH + constants.BORDER_THICKNESS + currentCoin.y,
+        constants.COIN_WIDTH, constants.COIN_HEIGHT);
     }
 
     //Redraw scene every frame (should work up to 144hz)

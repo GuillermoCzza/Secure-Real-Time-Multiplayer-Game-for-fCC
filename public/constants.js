@@ -4,6 +4,11 @@ const constants = Object.freeze({
 
     PLAYER_SPEED: 5,
 
+    COIN_WIDTH: 15,
+    COIN_HEIGHT: 15,
+
+    COIN_MAX_VALUE: 3,
+
     BOARD_HEIGHT: 420,
     BOARD_WIDTH: 610,
 

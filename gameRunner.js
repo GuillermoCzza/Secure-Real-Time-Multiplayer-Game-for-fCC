@@ -7,8 +7,29 @@ module.exports = function (httpServer, app) {
 
   const io = require('socket.io')(httpServer);
 
+  //function to create collectibles
+  function createCoin(){
+    const posX = Math.floor(Math.random() * (constants.BOARD_WIDTH - constants.COIN_WIDTH ));
+    const posY = Math.floor(Math.random() * (constants.BOARD_HEIGHT - constants.COIN_HEIGHT));
+    
+    //coin ID will be creation timestamp
+    const coinID = Date.now();
 
-  let currentCoin;
+    const coinValue = Math.floor(Math.random() * constants.COIN_MAX_VALUE) + 1;
+
+    return new Collectible({x: posX, y: posY, value: coinValue, id: coinID});
+  }
+
+  //function to create new players
+  function createPlayer(newID){
+    const posX = Math.floor(Math.random() * (constants.BOARD_WIDTH - constants.PLAYER_WIDTH));
+    const posY = Math.floor(Math.random() * (constants.BOARD_HEIGHT - constants.PLAYER_HEIGHT));
+    
+    return new Player({x: posX, y: posY, score: 0, id: newID})
+  }
+
+  let currentCoin = createCoin();
+  console.log(currentCoin);
   let playerList = [];
 
   
@@ -16,20 +37,13 @@ module.exports = function (httpServer, app) {
   //connection
   io.on('connect', socket => {
     const socketID = socket.id;
-    console.log("socket ID: " + socketID)
+    console.log('Player connected. ID: ' + socketID);
     
-    //create player
-    const posX = Math.floor(Math.random() * (constants.BOARD_WIDTH - constants.PLAYER_WIDTH));
-    const posY = Math.floor(Math.random() * (constants.BOARD_HEIGHT - constants.PLAYER_HEIGHT));
-    
-    const player = new Player({x: posX, y: posY, score: 0, id: socketID});
-    
-    console.log(player);
+    const player = createPlayer(socketID);
     playerList.push(player);
-    
-    console.log('player connected. ID: ' + socketID);
-    
-    io.emit('new player', player); //send player so that emitter can identify it as own
+
+    //send player so that emitter can identify it as own, and current coin so he can see it and pick it up
+    io.emit('new player', [player, currentCoin]);
     
     //when player moves, update in list
     socket.on('move', movedPlayer => {
@@ -37,6 +51,14 @@ module.exports = function (httpServer, app) {
         if(player.id === movedPlayer.id){
           player.x = movedPlayer.x;
           player.y = movedPlayer.y;
+
+          //TODO: add check for collision with coin
+          //this is for debugging, consuming coin on every move
+          player.score += currentCoin.value;
+          currentCoin = createCoin(); //replace coin for new one
+          console.log(currentCoin);
+          io.emit('new coin', currentCoin);
+
           break;
         }
       }
@@ -51,7 +73,7 @@ module.exports = function (httpServer, app) {
 
   //game update function
   function updatePlayers(){
-    io.emit('update', playerList);
+    io.emit('players update', playerList);
     console.log(playerList);
   }
   
