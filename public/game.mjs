@@ -63,9 +63,10 @@ socket.on('new player', ([newPlayer, preExistingCoin]) => {
       context.font = '24px Sans-Serif';
       context.fillText("Controls: Arrow Keys", constants.MARGIN, constants.HUD_WIDTH); //controls text
 
-      //draw rank text
+      //draw rank and score text
       context.fillStyle = "rgb(240, 240, 240)";
-      context.fillText("Rank " + player.calculateRank(otherPlayers), constants.MARGIN + constants.BOARD_WIDTH / 2, constants.HUD_WIDTH);
+      context.fillText("Rank: " + player.calculateRank(otherPlayers), constants.MARGIN + constants.BOARD_WIDTH / 2, constants.HUD_WIDTH);
+      context.fillText("Score: " + player.score, constants.MARGIN + constants.BOARD_WIDTH * 3 / 4, constants.HUD_WIDTH);
 
       //draw play area
       context.fillStyle = "rgb(30, 30, 50)";
