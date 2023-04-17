@@ -17,7 +17,7 @@ const http = require('http').createServer(app);
 const runGame = require("./gameRunner.js"); //require the game runner
 
 app.use('/public', express.static(process.cwd() + '/public'));
-//app.use('/assets', express.static(process.cwd() + '/assets'));
+app.use('/assets', express.static(process.cwd() + '/assets'));
 
 
 //set up helmet

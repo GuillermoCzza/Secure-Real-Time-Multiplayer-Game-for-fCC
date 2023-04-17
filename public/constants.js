@@ -1,6 +1,6 @@
 const constants = Object.freeze({
-    PLAYER_HEIGHT: 30,
-    PLAYER_WIDTH: 30,
+    PLAYER_HEIGHT: 45,
+    PLAYER_WIDTH: 45,
 
     PLAYER_SPEED: 5,
 

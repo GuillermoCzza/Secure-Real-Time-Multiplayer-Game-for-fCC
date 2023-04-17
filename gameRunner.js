@@ -81,6 +81,7 @@ module.exports = function (httpServer, app) {
   //game update function
   function updatePlayers(){
     io.emit('players update', playerList);
+    console.log(playerList);
   }
   
   //game update loop
